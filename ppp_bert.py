@@ -19,7 +19,7 @@ class TokenizeForBert(ppp.Step):
                     int64[{output_shape_str}] {self.output_names[2]})  
             {{
                 {self.output_names[0]}, {self.output_names[1]}, {self.output_names[2]} = 
-                    HfBertTokenizer <strip_accents=false, do_lower_case=true> ({self.input_names[0]})
+                    ortext.HfBertTokenizer <strip_accents=false, do_lower_case=true> ({self.input_names[0]})
             }}
             ''')
 

@@ -15,7 +15,7 @@ model.eval()
 # Generate dummy inputs to the model. Adjust if neccessary
 inputs = {
         'input_ids':   torch.randint(32, [1, 32], dtype=torch.long),       # list of numerical ids for the tokenized text
-        'token_type_ids': torch.randint(1, [1, 32], dtype=torch.long),     # dummy list of ones
+        'token_type_ids': torch.ones([1, 32], dtype=torch.long),           # dummy list of ones
         'attention_mask': torch.ones([1, 32], dtype=torch.long)            # dummy list of ones
     }
 
