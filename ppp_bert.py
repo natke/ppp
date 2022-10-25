@@ -15,8 +15,7 @@ class TokenizeForBert(ppp.Step):
 
         vocab="[UNK]"
         with open("bert_basic_cased_vocab.txt", "r", encoding='utf-8') as vocab_file:
-#            vocab = vocab_file.read().replace('\n', '\r\n')
-            vocab = vocab_file.read()
+            vocab = vocab_file.read().replace('\n', '\r')
 
         converter_graph = onnx.parser.parse_graph(f'''\
             tokenize ({input_type_str}[{input_shape_str}] {self.input_names[0]}) 
@@ -25,14 +24,15 @@ class TokenizeForBert(ppp.Step):
                     int64[{output_shape_str}] {self.output_names[2]})  
             {{
                 {self.output_names[0]}, {self.output_names[1]}, {self.output_names[2]} = 
-                    ai.onnx.contrib.BertTokenizer <strip_accents=false, do_lower_case=true> ({self.input_names[0]})
+                    ai.onnx.contrib.BertTokenizer <strip_accents=0, do_lower_case=1> ({self.input_names[0]})
             }}
             ''')
 
         vocab_file = converter_graph.node[0].attribute.add()
         vocab_file.name = "vocab_file"
         vocab_file.type = onnx.AttributeProto.AttributeType.STRING
-        vocab_file.s = bytes(vocab, "utf-8")
+#        vocab_file.s = bytes(vocab, "utf-8")
+        vocab_file.s = open('bert_basic_cased_vocab.txt', 'rb').read()
 
         onnx.checker.check_graph(converter_graph, self._custom_op_checker_context)
 
