@@ -35,3 +35,14 @@ torch.onnx.export(model,                                         # model being r
                                 'input_types': symbolic_names, 
                                 'input_mask' : symbolic_names,
                                 'output_logits' : symbolic_names}) # variable length axes
+
+# Test the exported model
+import onnxruntime
+
+# Load the model
+session = onnxruntime.InferenceSession('lordtt13-emo-mobilebert.onnx')
+
+# Run the model
+results = session.run(["output_logits"], {"input_ids": inputs['input_ids'].numpy(), "input_types": inputs['token_type_ids'].numpy(), "input_mask": inputs['attention_mask'].numpy()})
+
+print(results[0])

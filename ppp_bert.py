@@ -31,6 +31,10 @@ class TokenizeForBert(ppp.Step):
 
         onnx.checker.check_graph(converter_graph, self._custom_op_checker_context)
 
+        # hack so output shapes are maintained when onnx.compose.merge_graphs is called.
+        # TODO: Update that to not always drop shape info from outputs of first graph being merged
+        converter_graph.value_info.extend(converter_graph.output)
+        
         return converter_graph
 
 
@@ -43,7 +47,7 @@ def bert(model_file: Path, output_file: Path):
 
     pipeline = ppp.PrePostProcessor(inputs)
     pipeline.add_pre_processing([
-        TokenizeForBert(),  # this outputs 3 values, each with a batch dim of 1 which
+        TokenizeForBert(),  # this outputs 3 values, each with a batch dim of 1
     ])
 
     # TODO Add post processing
